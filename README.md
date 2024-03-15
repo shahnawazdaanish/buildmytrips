@@ -1,3 +1,14 @@
-# Free Modernize vuejs 3 based admin dashboard template Download it for free
-Modernize vue3 + vite + typescript +vuetify 3 admin Template
-# Chekcout the live link : https://modernize-vue3-free.netlify.app/ <a href="https://modernize-vue3-free.netlify.app/">Live Preview </a>
+# BuildMyTrips
+
+An AI based recommendation system
+
+Made with Vue3, Vuetify3 and Modernize template
+
+## Installation
+
+1. Install Packages using 
+``
+npm install
+``
+2. Run dev server ``npm run dev``
+3. Change API url from ``.env`` file
