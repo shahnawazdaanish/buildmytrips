@@ -19,3 +19,15 @@ html {
 .v-divider {
     border-color: rgba(var(--v-border-color), 1) !important;
 }
+.v-card {
+    opacity: 0.95;
+}
+.v-toolbar {
+    opacity: 0.95;
+}
+.v-navigation-drawer__content {
+    overflow-y: hidden;
+}
+.plan-trip .v-stepper-header {
+    display: none;
+}

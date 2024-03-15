@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
-import { useSearchStore } from '@/store/search';
+import {computed, onMounted, ref} from 'vue';
+import {useSearchStore} from '@/store/search';
 
 const searchStore = useSearchStore();
 
 onMounted(async () => {
     loading.value = true;
-    const { status, content } = await searchStore.dispatchGetGenericSearchInterests()
+    const {status, content} = await searchStore.dispatchGetGenericSearchInterests()
     loading.value = false;
 })
 
@@ -37,13 +37,13 @@ const categories = computed(() => {
     if (!searchText) return searchStore.searchInterests
 
     return searchStore.searchInterests.filter(item => {
-        const text = item.title.toLowerCase()
+        const text = '' // item.title.toLowerCase()
 
         return text.indexOf(searchText) > -1
     })
 });
 
-const  selections = computed(() => {
+const selections = computed(() => {
     const selections: any[] = []
 
     for (const selection of selected.value) {
@@ -74,6 +74,22 @@ const  selections = computed(() => {
                 </v-toolbar>
 
                 <v-container>
+
+                    <v-row>
+                        <v-stepper width="100%" :items="['Step 1', 'Step 2', 'Step 3']">
+                            <template v-slot:item.1>
+                                <v-card title="Step One" flat>...</v-card>
+                            </template>
+
+                            <template v-slot:item.2>
+                                <v-card title="Step Two" flat>...</v-card>
+                            </template>
+
+                            <template v-slot:item.3>
+                                <v-card title="Step Three" flat>...</v-card>
+                            </template>
+                        </v-stepper>
+                    </v-row>
                     <v-row
                         align="center"
                         justify="start"
@@ -118,21 +134,21 @@ const  selections = computed(() => {
 
                 <v-list>
                     <template v-for="item in categories">
-                        <v-list-item
+<!--                        <v-list-item
                             v-if="!selected.includes(item)"
                             :key="item.title"
                             :disabled="loading"
                             @click="selected.push(item)"
                         >
                             <template v-slot:prepend>
-                                <v-icon
-                                    :disabled="loading"
-                                    :icon="item.icon"
-                                ></v-icon>
+&lt;!&ndash;                                <v-icon&ndash;&gt;
+&lt;!&ndash;                                    :disabled="loading"&ndash;&gt;
+&lt;!&ndash;                                    :icon="item.icon"&ndash;&gt;
+&lt;!&ndash;                                ></v-icon>&ndash;&gt;
                             </template>
 
-                            <v-list-item-title v-text="item.title"></v-list-item-title>
-                        </v-list-item>
+&lt;!&ndash;                            <v-list-item-title v-text="item?.title"></v-list-item-title>&ndash;&gt;
+                        </v-list-item>-->
                     </template>
                 </v-list>
 

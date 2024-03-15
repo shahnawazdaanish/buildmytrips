@@ -3,6 +3,7 @@ import { RouterView } from 'vue-router';
 // import VerticalSidebarVue from './vertical-sidebar/VerticalSidebar.vue';
 // import VerticalHeaderVue from './vertical-header/VerticalHeader.vue';
 import MainView from './Main.vue';
+import bg from '@/assets/images/background/bg4.jpg';
 </script>
 
 <template>
@@ -10,6 +11,7 @@ import MainView from './Main.vue';
         <v-app>
             <!-- <VerticalSidebarVue />
             <VerticalHeaderVue  /> -->
+          <v-parallax :src="bg">
             <MainView />
             <v-main>
                 <v-container fluid class="page-wrapper">
@@ -18,6 +20,7 @@ import MainView from './Main.vue';
                     </div>
                 </v-container>
             </v-main>
+          </v-parallax>
         </v-app>
     </v-locale-provider>
 </template>

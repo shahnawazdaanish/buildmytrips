@@ -16,12 +16,7 @@ const logout = async () => {
 
     localStorage.removeItem('token')
 
-    if (!success) {
-        console.log(content);
-        // showErrorAlert(content?.message, 5000);
-    } else {
-        router.push('/auth/login')
-    }
+    router.push('/auth/login')
 }
 </script>
 
@@ -51,7 +46,7 @@ const logout = async () => {
                     </template>
                     <v-list-item-title  class="pl-4 text-body-1">My Account</v-list-item-title>
                 </v-list-item>
-                <v-list-item value="item3" active-color="primary"> 
+                <v-list-item value="item3" active-color="primary">
                     <template v-slot:prepend>
                         <ListCheckIcon stroke-width="1.5"  size="20"/>
                     </template>

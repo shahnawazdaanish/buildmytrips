@@ -26,13 +26,13 @@ const sidebarItem: menu[] = [
     {
         title: 'Dashboard',
         icon: LayoutDashboardIcon,
-        to: '/',
+        to: '/app/dashboard',
     },
     { header: 'recommendations' },
     {
-        title: 'Search',
+        title: 'Plan a Trip',
         icon: MapSearchIcon,
-        to: '/app/search'
+        to: '/app/plan-a-trip'
     },
     {
         title: 'Previous History',

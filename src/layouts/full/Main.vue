@@ -16,7 +16,7 @@ const sDrawer = ref(true);
 
 <template>
     <!------Sidebar-------->
-    <v-navigation-drawer left elevation="0"  app class="leftSidebar"  v-model="sDrawer">
+    <v-navigation-drawer left elevation="0"  app class="leftSidebar"  v-model="sDrawer" style="opacity: 0.95">
         <!---Logo part -->
         <div class="pa-5">
             <Logo />

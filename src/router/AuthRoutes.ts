@@ -6,6 +6,11 @@ const AuthRoutes = {
     },
     children: [
         {
+            name: 'Home',
+            path: '/',
+            component: () => import('@/views/home/index.vue')
+        },
+        {
             name: 'Login',
             path: '/auth/login',
             component: () => import('@/views/auth/Login.vue')

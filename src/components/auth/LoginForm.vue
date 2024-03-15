@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import {onMounted, ref} from 'vue';
 import { useField, useForm } from 'vee-validate';
 import { useAuthStore } from '@/store/auth';
 import { router } from '@/router';
@@ -56,7 +56,15 @@ const submit = handleSubmit(async (values: { email: any; password: any; remember
         if (content) {
             localStorage.setItem('token', content);
         }
-        router.push('/')
+        router.push('/app/dashboard')
+    }
+});
+
+onMounted(() => {
+    let token = localStorage.getItem('token');
+
+    if (token) {
+        router.push('/app/dashboard');
     }
 });
 </script>

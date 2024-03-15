@@ -1,190 +1,124 @@
 <script setup lang="ts">
-import UiParentCard from '@/components/shared/UiParentCard.vue';
-import Heading from "@/components/style-components/typography/Heading.vue";
-import Default from "@/components/style-components/typography/DefaultText.vue";
-import SearchStepper from '@/components/search/SearchStepper.vue';
-import { computed, ref } from 'vue';
-import { useAuthStore } from '@/store/auth';
-import { useField, useForm } from 'vee-validate';
-import { router } from '@/router';
-import SearchForm from '@/components/auth/SearchForm.vue';
-import { useSearchStore } from '@/store/search';
+import {reactive, ref} from 'vue';
+import {useSearchStore} from '@/store/search';
+import SearchStep1 from "@/components/search/SearchStep1.vue";
+import SearchStep2 from "@/components/search/SearchStep2.vue";
+import SearchStep3 from "@/components/search/SearchStep3.vue";
+import ErrorAlert from "@/components/shared/ErrorAlert.vue";
+
+const resetTripValue = { people: 1, city: '', budget:0, startDate: '', endDate:'', food: [], interest: [], recommendation: {} };
 
 const searchStore = useSearchStore();
 const events = ref([]);
 const input = ref(null);
-let nonce = ref(0);
+let trip = reactive(JSON.parse(JSON.stringify(resetTripValue)));
+let step = ref(1);
+const step1 = ref();
+const step2 = ref();
+const step3 = ref();
+const valid = ref(true);
+const errorTitle = ref('');
+const errorMessage = ref(null);
+const nextText = ref('Next');
+const prevText = ref('Prev');
 
-const timeline = computed(()=> {
-    return events.value.slice().reverse();
-});
+const callNext = () => {
+    const currentStep = step.value === 1 ? step1 : (step.value === 2 ? step2 : step3);
+    currentStep.value.next(step);
+}
 
-const currentWindow = computed(() => {
-    return searchStore.searchStepInformation.currentWindow;
-});
+const callPrev = () => {
+    const currentStep = step.value === 1 ? step1 : (step.value === 2 ? step2 : step3);
+    currentStep.value.prev(step);
+}
 
-const comment = () => {
-};
+const restart = () => {
+    trip = reactive(resetTripValue);
+    step.value = 1;
+}
+
+const raiseError = (title, message) => {
+    errorTitle.value = title;
+    errorMessage.value = message;
+}
+
+const resetError = () => {
+    errorTitle.value = '';
+    errorMessage.value = null;
+}
 
 </script>
 
 <template>
+
     <v-row>
-        <v-col cols="12" md="12">
-            <SearchForm/>
-        </v-col>
-    </v-row>
-
-    <v-row v-show="currentWindow > 1">
         <v-col>
-            <v-timeline
-                density="compact"
-                side="end"
-            >
-                <v-timeline-item
-                    fill-dot
-                    class="mb-12"
-                    dot-color="primary"
-                    size="large"
+            <v-card rounded class="plan-trip">
+                <v-toolbar
+                    color="primary"
+                    flat
                 >
-                    <template v-slot:icon>
-                        <span>JL</span>
-                    </template>
-                    <v-text-field
-                        v-model="input"
-                        hide-details
-                        label="Leave a comment..."
-                        density="compact"
-                        @keydown.enter="comment"
-                    >
-                        <template v-slot:append>
-                            <v-btn
-                                color="primary"
-                                class="mx-0"
-                                variant="text"
-                                @click="comment"
-                            >
-                                Post
-                            </v-btn>
-                        </template>
-                    </v-text-field>
-                </v-timeline-item>
-
-                <v-slide-x-transition group>
-                    <v-timeline-item
-                        v-for="event in timeline"
-                        :key="event.id"
-                        class="mb-4"
-                        dot-color="pink"
-                        size="small"
-                    >
-                        <div class="d-flex justify-space-between flex-grow-1">
-                            <div>{{ event.text }}</div>
-                            <div class="flex-shrink-0">{{ event.time }}</div>
-                        </div>
-                    </v-timeline-item>
-                </v-slide-x-transition>
-
-                <v-timeline-item
-                    class="mb-6"
-                    hide-dot
-                >
-                    <span>TODAY</span>
-                </v-timeline-item>
-
-                <v-timeline-item
-                    class="mb-4"
-                    dot-color="grey"
-                    size="small"
-                >
-                    <div class="d-flex justify-space-between flex-grow-1">
-                        <div>
-                            This order was archived.
-                        </div>
-                        <div class="flex-shrink-0">
-                            15:26 EDT
-                        </div>
-                    </div>
-                </v-timeline-item>
-
-                <v-timeline-item
-                    class="mb-4"
-                    dot-color="primary"
-                    size="small"
-                >
-                    <div class="d-flex justify-space-between flex-grow-1">
-                        <div>
-                            <v-chip
-                                class="ms-0"
-                                color="purple"
-                                label
-                                size="small"
-                            >
-                                APP
-                            </v-chip>
-                            Digital Downloads fulfilled 1 item.
-                        </div>
-                        <div class="flex-shrink-0">
-                            15:25 EDT
-                        </div>
-                    </div>
-                </v-timeline-item>
-
-                <v-timeline-item
-                    class="mb-4"
-                    dot-color="grey"
-                    size="small"
-                >
-                    <div class="d-flex justify-space-between flex-grow-1">
-                        <div>
-                            Order confirmation email was sent to John Leider (john@google.com).
-                        </div>
-                        <div class="flex-shrink-0">
-                            15:25 EDT
-                        </div>
-                    </div>
-                </v-timeline-item>
-
-                <v-timeline-item
-                    class="mb-4"
-                    hide-dot
-                >
-                    <v-btn
-                        variant="outlined"
-                    >
-                        Resend Email
+                    <v-toolbar-title>Plan a trip</v-toolbar-title>
+                    <v-spacer></v-spacer>
+                    <v-btn border :disabled="step === 1" @click="restart">
+                        Restart again
                     </v-btn>
-                </v-timeline-item>
+                </v-toolbar>
 
-                <v-timeline-item
-                    class="mb-4"
-                    dot-color="grey"
-                    size="small"
-                >
-                    <div class="d-flex justify-space-between flex-grow-1">
-                        <div>
-                            A $15.00 USD payment was processed on PayPal Express Checkout
-                        </div>
-                        <div class="flex-shrink-0">
-                            15:25 EDT
-                        </div>
-                    </div>
-                </v-timeline-item>
+                <v-container>
+                    <ErrorAlert
+                        v-if="errorMessage !== null"
+                        :title="errorTitle"
+                        :message="errorMessage"
+                        @resetError="resetError"
+                    />
 
-                <v-timeline-item
-                    dot-color="grey"
-                    size="small"
-                >
-                    <div class="d-flex justify-space-between flex-grow-1">
-                        <div>
-                            John Leider placed this order on Online Store (checkout #1937432132572).
-                        </div>
-                        <div class="flex-shrink-0">
-                            15:25 EDT
-                        </div>
-                    </div>
-                </v-timeline-item>
-            </v-timeline>
+                    <v-row>
+                        <v-col>
+                            <v-stepper
+                                v-model="step"
+                                flat
+                                :items="['1','2','3']"
+                                hide-actions
+                            >
+                                <template v-slot:item.1>
+                                    <v-card flat>
+                                        <SearchStep1 ref="step1" :trip="trip" :valid="valid" @raiseError="raiseError" />
+                                    </v-card>
+                                </template>
+
+                                <template v-slot:item.2>
+                                    <v-card flat>
+                                        <SearchStep2 ref="step2" :trip="trip" :valid="valid" @raiseError="raiseError"  />
+                                    </v-card>
+                                </template>
+
+                                <template v-slot:item.3>
+                                    <v-card flat>
+                                        <SearchStep3 ref="step3"
+                                                     :trip="trip"
+                                                     :valid="valid"
+                                                     :next-text="nextText"
+                                                     :prev-text="prevText"
+                                                     @raiseError="raiseError"
+                                                     @restart="restart"
+                                        />
+                                    </v-card>
+                                </template>
+
+                                <v-stepper-actions v-if="step !== 3"
+                                    :prev-text="prevText"
+                                    @click:next="callNext"
+                                    @click:prev="callPrev"
+                                    :next-text="nextText"
+                                ></v-stepper-actions>
+                            </v-stepper>
+                        </v-col>
+                    </v-row>
+
+                </v-container>
+
+            </v-card>
         </v-col>
     </v-row>
 </template>

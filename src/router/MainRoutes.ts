@@ -8,12 +8,12 @@ const MainRoutes = {
     children: [
         {
             name: 'Dashboard',
-            path: '/',
+            path: '/app/dashboard',
             component: () => import('@/views/dashboard/index.vue')
         },
         {
-            name: 'Search',
-            path: '/app/search',
+            name: 'Plan a Trip',
+            path: '/app/plan-a-trip',
             component: () => import('@/views/search/Search.vue')
         },
         {

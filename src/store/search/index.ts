@@ -1,8 +1,8 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
 import type {
-    Interest,
-    PreviousHistory, SearchSteps
+    Interest, MLData,
+    PreviousHistory, Recommendation, SearchSteps
 } from '@/services/search/types';
 import type { APIResponse } from '@/services/types';
 import { API } from '@/services';
@@ -82,11 +82,41 @@ export const useSearchStore = defineStore("searchStore", () => {
         };
     }
 
+
+    async function dispatchFetchRecommendations(mlData: MLData): Promise<{ success: boolean; content: string|Object; status: number }> {
+        try {
+            const { status, data } = await API.search.fetchRecommendations(mlData);
+            console.log('errorNet', status, data);
+            if (status === 200) {
+                // initGenericSearchInterests(data);
+                return {
+                    status: status,
+                    success: true,
+                    // @ts-ignore
+                    content: data
+                };
+            }
+        } catch (error) {
+            const _error = error as AxiosError<string>;
+            return {
+                success: false,
+                status: _error.response?.status,
+                content: _error.response?.data,
+            };
+        }
+        return {
+            success: false,
+            content: null,
+            status: 400,
+        };
+    }
+
     return {
         previousHistory,
         searchInterests,
         searchStepInformation,
         dispatchGetPrevHistory,
         dispatchGetGenericSearchInterests,
+        dispatchFetchRecommendations,
     };
 });
